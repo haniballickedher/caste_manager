@@ -5,11 +5,18 @@ game "rdr3"
 
 
 client_scripts {
-	'config.lua',
+	
 	'client.lua',
+}
+
+
+
+shared_scripts {
+	'config.lua',
+
 }
 
 server_scripts {
 	'server.lua',
-	'config.lua',
+	'@oxmysql/lib/MySQL.lua'
 }

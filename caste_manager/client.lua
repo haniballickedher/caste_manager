@@ -2,18 +2,16 @@ local VORPcore = exports.vorp_core:GetCore()
 local playerCaste 
 
 RegisterNetEvent("vorp:SelectedCharacter", function(charid)
-    TriggerClientEvent('getUserCaste', targetServerId)
+    TriggerEvent('getUserCaste')
  end)
 
  RegisterNetEvent('getUserCaste')
  AddEventHandler('getUserCaste', function(source)
-     local Character = VORPcore.getUser(source).getUsedCharacter 
-     local CharID = Character.Identifier
-     playerCaste = VORPcore.Callback.TriggerAwait('getPlayerCaste', CharID)
+     playerCaste = VORPcore.Callback.TriggerAwait('getPlayerCaste')
      if playerCaste then 
-         Debug.print("Player Caste Updated: " .. playerCaste)
+         print("Player Caste Updated: " .. playerCaste)
      else
-         Debug.print("No Caste. Defaulting to Human")
+         print("No Caste. Defaulting to Human")
          playerCaste = Config.DefaultCaste
      end
  end)
@@ -23,18 +21,19 @@ Citizen.CreateThread(function()
     while true do
         local playerPed = PlayerPedId()
         local weather = VORPcore.Callback.TriggerAwait('sendWeathertoClient', source)
-        Debug.print(weather)
-
+        print(weather)
+        if playerCaste == nil then TriggerEvent('getUserCaste') end
         if playerCaste == "Vampire" and isWeatherInConditions(weather) then
-            Debug.print("Player is vampire and weather is " .. weather)
+            print("Player is vampire and weather is " .. weather)
             local currentHealth = GetEntityHealth(playerPed)
             if currentHealth > 0 then
-                SetEntityHealth(playerPed, currentHealth - 1) -- Reduce health by 1
+                SetEntityHealth(playerPed, currentHealth - 10) -- Reduce health by 1
             end
         end
         Citizen.Wait(5000) --maybe once a minute is plenty here but this is for testing
     end
 end)
+
 
 ---Weather Table Compare
 function isWeatherInConditions(weather)
