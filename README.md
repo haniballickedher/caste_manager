@@ -3,20 +3,20 @@ Script to govern fantasy "races" or "caste" capability - buffs and debuffs.  Env
 - Export for Set Race/Caste
   
 Sun Effects
--Sun Drain for Vampires and other night dwelling races- complete
--Sun protection items with metadata
+- Sun Drain for Vampires and other night dwelling races- complete
+- Sun protection items with metadata
 
 Night Effects
 ???
 
 Ped Transformations
---Configurable by Race
+- Configurable by Race
 
 Tank Boosts for Races
--Health max boost for tanky races
+- Health max boost for tanky races
 
 Race/Caste Height Changes
---Configurable height changes for certain races
+- Configurable height changes for certain races
 
 
 
