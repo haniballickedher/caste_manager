@@ -13,6 +13,7 @@ client_scripts {
 
 shared_scripts {
 	'config.lua',
+	'castes.lua',
 	'utils.lua'
 
 }

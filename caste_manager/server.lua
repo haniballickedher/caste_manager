@@ -24,8 +24,9 @@ end)
 
 VORPcore.Callback.Register('getPlayerCaste', function(source, callback)
   local _source = source
-  local user = VORPcore.getUser(_source)
-  local charId = (user.getUsedCharacter).charIdentifier
+  local User = VORPcore.getUser(_source)
+  local Character = VORPcore.getUser(source).getUsedCharacter 
+  local charId = Character.charIdentifier
   print(charId)
   local caste
   local row = MySQL.single.await('SELECT caste from characters WHERE charidentifier = ?', {
@@ -43,20 +44,27 @@ end)
 
 
 
-RegisterServerEvent('setCaste')
-AddEventHandler('setCaste', function(source, caste)
+RegisterServerEvent('caste_manager:setCaste')
+AddEventHandler('caste_manager:setCaste', function(caste)
   local _source = source
-  local user = VORPcore.getUser(_source)
-  local character = user.getUsedCharacter()   -- Call the function to obtain the character object
-  local charId = character.charIdentifier
+  local character = VORPcore.getUser(_source).getUsedCharacter
+  local charId = character.charIdentifier  -- Call the function to obtain the character object
   local newCaste = caste
+  print(newCaste..charId)
   local rows = MySQL.update.await('UPDATE characters SET caste = ? WHERE charidentifier = ?', {
     newCaste, charId
   })
+
   if rows then
     print("Successfully updated caste")
-    -- Check if the new caste is in Config.CasteHeights and get its height
+    
+    -- Check if the new caste has a heighmod and get its height
+   
     local height = getCasteHeight(newCaste)
+  if height then print("heightmod"..height)
+  else
+    print("heightmod is nil")
+  end 
     if height then
       -- Update ped height to new size
       local currentSkin = character.skin
@@ -71,10 +79,9 @@ AddEventHandler('setCaste', function(source, caste)
       local updatedSkin = json.encode(currentSkinTable)
 
       -- Update the character's skin with the modified scale
-      Character.updateSkin(updatedSkin)
+      character.updateSkin(updatedSkin)
 
       print("Scale updated to:", height)
-    
     end
   else
     print("No caste update")
@@ -82,6 +89,21 @@ AddEventHandler('setCaste', function(source, caste)
 end)
 
 
+-- Register usable items
+for _, casteInfo in pairs(Castes) do
+  if casteInfo.transform and casteInfo.transformitem then
+      local transformItem = casteInfo.transformitem
+      print("Registering usable item:", transformItem)
+
+      exports.vorp_inventory:registerUsableItem(transformItem, function(data)
+          local _source = data.source
+          print("Item:", transformItem)
+          TriggerClientEvent("vorp_inventory:CloseInv", _source)
+          TriggerClientEvent('caste_manager:useTransformItem', _source, transformItem)
+          print("Used item:", transformItem)
+      end)
+  end
+end
 
 exports('setPlayerCaste', function(source, caste)
   TriggerClientEvent('setCaste', source, caste)
