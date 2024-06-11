@@ -10,13 +10,13 @@ Night Effects
 ???
 
 Ped Transformations
-- Configurable by Race
+- Configurable by Race -  optional item
 
 Tank Boosts for Races
 - Health max boost for tanky races
 
 Race/Caste Height Changes
-- Configurable height changes for certain races
+- Configurable height changes for certain races - complete
 
 
 
